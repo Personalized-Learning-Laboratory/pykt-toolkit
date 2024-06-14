@@ -81,9 +81,9 @@ def model_forward(model, data, rel=None):
     m, sm = dcur["masks"].to(device), dcur["smasks"].to(device)
 
     ys, preloss = [], []
-    cq = torch.cat((q[:,0:1], qshft), dim=1)
-    cc = torch.cat((c[:,0:1], cshft), dim=1)
-    cr = torch.cat((r[:,0:1], rshft), dim=1)
+    cq = torch.cat((q[:,0:1], qshft), dim=1).to(device)
+    cc = torch.cat((c[:,0:1], cshft), dim=1).to(device)
+    cr = torch.cat((r[:,0:1], rshft), dim=1).to(device)
     if model_name in ["hawkes"]:
         ct = torch.cat((t[:,0:1], tshft), dim=1)
     elif model_name in ["rkt"]:
@@ -157,6 +157,9 @@ def model_forward(model, data, rel=None):
     # cal loss
     elif model_name == "lpkt":
         # y = model(cq.long(), cr.long(), cat, cit.long())
+        cq = cq.to(device)
+        cit = cit.to(device)
+        cr = cr.to(device)
         y = model(cq.long(), cr.long(), cit.long())
         ys.append(y[:, 1:])  
     elif model_name == "hawkes":
@@ -176,11 +179,12 @@ def model_forward(model, data, rel=None):
     return loss
     
 
-def train_model(model, train_loader, valid_loader, num_epochs, opt, ckpt_path, test_loader=None, test_window_loader=None, save_model=False, data_config=None, fold=None):
+def train_model(model: torch.nn.Module, train_loader, valid_loader, num_epochs, opt, ckpt_path, test_loader=None, test_window_loader=None, save_model=False, data_config=None, fold=None):
     max_auc, best_epoch = 0, -1
     train_step = 0
 
     rel = None
+
     if model.model_name == "rkt":
         dpath = data_config["dpath"]
         dataset_name = dpath.split("/")[-1]
