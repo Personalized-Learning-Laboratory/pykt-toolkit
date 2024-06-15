@@ -41,6 +41,7 @@ def save_cur_predict_result(dres, q, r, d, t, m, sm, p):
         prelabels = [1 if p >= 0.5 else 0 for p in ps]
         acc = metrics.accuracy_score(ts, prelabels)
         dres[len(dres)] = [qs, rs, ds, ts, ps, prelabels, auc, acc]
+        # questions, results, d
         results.append(str([qs, rs, ds, ts, ps, prelabels, auc, acc]))
     return "\n".join(results)
 

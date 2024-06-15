@@ -10,7 +10,7 @@ def read_data_from_csv(read_file, write_file):
         data = f.readlines()[1:]
     user_data = {}
     for line in data:
-        uid, submit_time, qid, skill_id, correct, duration = line.strip().split(",")
+        uid, submit_time, qid, skill_id, correct, duration, stu_answer = line.strip().split(",")
         if uid not in user_data:
             user_data[uid] = {
                 "skill_id": [skill_id],
