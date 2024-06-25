@@ -129,7 +129,7 @@ def evaluate(model, test_loader, model_name, rel=None, save_path=""):
             elif model_name == "lpkt":
                 # cat = torch.cat((d["at_seqs"][:,0:1], dshft["at_seqs"]), dim=1).to(device)
                 cit = torch.cat((dcur["itseqs"][:,0:1], dcur["shft_itseqs"]), dim=1).to(device)
-                y = model(cq.long(), cr.long(), cit.long())
+                y, gamma_f = model(cq.long(), cr.long(), cit.long())
                 y = y[:,1:]
                 c,cshft = q,qshft#question level 
             elif model_name == "hawkes":
@@ -164,7 +164,10 @@ def evaluate(model, test_loader, model_name, rel=None, save_path=""):
         acc = metrics.accuracy_score(ts, prelabels)
     # if save_path != "":
     #     pd.to_pickle(dres, save_path+".pkl")
-    return auc, acc
+    if model_name == "lpkt":
+        return auc, acc, gamma_f
+    else:
+        return auc, acc
 
 def early_fusion(curhs, model, model_name):
     if model_name in ["dkvmn","skvmn"]:

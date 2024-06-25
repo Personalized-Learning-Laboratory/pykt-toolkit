@@ -76,6 +76,10 @@ def main(params):
 
     if model.model_name == "rkt":
         testauc, testacc = evaluate(model, test_loader, model_name, rel, save_test_path)
+    elif model.model_name == "lpkt":
+        testauc, testacc, gamma_f = evaluate(model, test_loader, model_name, save_path=save_test_path)
+        gamma_f = gamma_f.cpu().numpy()
+        print(f"gamma_f shape: {gamma_f.shape}")
     else:
         testauc, testacc = evaluate(model, test_loader, model_name, save_path=save_test_path)
     print(f"testauc: {testauc}, testacc: {testacc}")

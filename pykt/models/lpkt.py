@@ -142,6 +142,6 @@ class LPKT(nn.Module):
             h_pre = h
             h_tilde_pre = h_tilde
         if not qtest:
-            return pred
+            return pred, gamma_f
         else:
             return pred, hidden_state[:,:-1,:], e_embed_data
